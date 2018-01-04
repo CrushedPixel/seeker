@@ -60,7 +60,7 @@ func SendSeekable(c *gin.Context, in io.ReadSeeker, length int64) error {
 		// seek resource to start of range
 		_, err = in.Seek(rng.Start, 0)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		// write range to response,
 		// ignoring any errors, as they are most likely
@@ -82,7 +82,7 @@ func SendSeekable(c *gin.Context, in io.ReadSeeker, length int64) error {
 func SendSeekableFile(c *gin.Context, file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	return SendSeekable(c, file, stat.Size())
