@@ -1,13 +1,13 @@
 package seeker
 
 import (
-	"os"
-	"github.com/gin-gonic/gin"
 	"errors"
-	"net/http"
-	"strconv"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
+	"net/http"
+	"os"
+	"strconv"
 )
 
 const (
