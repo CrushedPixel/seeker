@@ -1,10 +1,8 @@
 package seeker
 
 import (
-	"strings"
-	"errors"
-	"fmt"
 	"strconv"
+	"strings"
 )
 
 type RangeHeader struct {
@@ -17,15 +15,7 @@ type Range struct {
 	End   int64
 }
 
-var (
-	ErrInvalidRangeHeader = errors.New("invalid range header")
-	ErrEndSmallerThanStart = errors.New("invalid range: end is smaller than start")
-)
-
-func errInvalidRange(str string) error {
-	return errors.New(fmt.Sprintf(`invalid range: "%s"`, str))
-}
-
+// ParseRangeHeader parses a Content-Range header value.
 func ParseRangeHeader(header string) (*RangeHeader, error) {
 	spl := strings.SplitN(header, "=", 2)
 	if len(spl) < 2 {
@@ -41,15 +31,15 @@ func ParseRangeHeader(header string) (*RangeHeader, error) {
 	for _, rangeString := range rangeStrings {
 		rangeString = strings.TrimSpace(rangeString)
 		if rangeString == "" {
-			return nil, errInvalidRange(rangeString)
+			return nil, ErrInvalidRangeHeader
 		}
 		values := strings.SplitN(rangeString, "-", 2)
 		if len(values) < 2 {
-			return nil, errInvalidRange(rangeString)
+			return nil, ErrInvalidRangeHeader
 		}
 		start, err := strconv.ParseInt(values[0], 10, 0)
 		if err != nil {
-			return nil, errInvalidRange(rangeString)
+			return nil, ErrInvalidRangeHeader
 		}
 		var end int64
 		if values[1] == "" {
@@ -57,7 +47,7 @@ func ParseRangeHeader(header string) (*RangeHeader, error) {
 		} else {
 			end, err = strconv.ParseInt(values[1], 10, 0)
 			if err != nil {
-				return nil, errInvalidRange(rangeString)
+				return nil, ErrInvalidRangeHeader
 			}
 			if end < start {
 				return nil, ErrEndSmallerThanStart
